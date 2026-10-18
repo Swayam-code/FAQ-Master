@@ -19,12 +19,25 @@ This guide provides instructions for deploying the FAQ Master application using 
 ### Step-by-Step Deployment
 
 1. **Set Environment Variables**
-   Create a `.env` file in the project root:
+   Copy `.env.example` to the ignored `.env` file in the project root. Generate a
+   new private value with `python -c "import secrets; print(secrets.token_urlsafe(64))"`
+   and place it in `DJANGO_SECRET_KEY`. Never commit the generated value.
    ```env
-   DJANGO_SECRET_KEY=your-secure-secret-key
+   DJANGO_SECRET_KEY=<paste-your-new-random-value-here>
    DJANGO_SETTINGS_MODULE=faqmaster.settings_prod
    ALLOWED_HOSTS=localhost,127.0.0.1
    ```
+
+   Docker Compose reads `.env` and injects `DJANGO_SECRET_KEY` into the web
+   container. Missing or blank keys stop startup. For direct Django/Gunicorn
+   deployments, set `DJANGO_SECRET_KEY` in the process environment or your hosting
+   secret manager; Django does not automatically read `.env`. Static files are
+   collected at container startup so the build never needs a signing key.
+
+   Rotate every previously committed Django signing key in each deployment,
+   including any key from the removed `.env`. Removing files does not remove Git
+   history. Do not retain an exposed key in `SECRET_KEY_FALLBACKS`; existing
+   sessions and signed links may be invalidated by rotation.
 
 2. **Build and Start Containers**
    ```bash

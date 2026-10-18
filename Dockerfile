@@ -26,9 +26,6 @@ COPY . /app/
 # Create directories for static and media files
 RUN mkdir -p /app/staticfiles /app/mediafiles
 
-# Collect static files
-RUN python manage.py collectstatic --noinput
-
 # Create and switch to non-root user
 RUN useradd -m myuser
 RUN chown -R myuser:myuser /app
@@ -38,4 +35,4 @@ USER myuser
 EXPOSE 8000
 
 # Run the application
-CMD ["gunicorn", "faqmaster.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
+CMD ["sh", "-c", "python manage.py collectstatic --noinput && exec gunicorn faqmaster.wsgi:application --bind 0.0.0.0:8000 --workers 3"]

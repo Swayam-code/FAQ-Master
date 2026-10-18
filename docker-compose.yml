@@ -14,7 +14,7 @@ services:
     environment:
       - DJANGO_SETTINGS_MODULE=faqmaster.settings_prod
       - REDIS_URL=redis://redis:6379/1
-      - SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:?Set DJANGO_SECRET_KEY in your private .env or shell environment}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
       interval: 30s

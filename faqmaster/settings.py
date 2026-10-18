@@ -4,12 +4,15 @@ Django settings for faqmaster project.
 
 from pathlib import Path
 import os
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-k-bw1q4vz@xdz2txu!iyy=%r=i742r-eyk(nnhr#341@55n#(8'
+# Require a private key in every environment; never fall back to a shared key.
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "")
+if not SECRET_KEY.strip():
+    raise ImproperlyConfigured("Set DJANGO_SECRET_KEY to a private, randomly generated value.")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

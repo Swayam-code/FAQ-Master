@@ -36,17 +36,26 @@ cd FAQMaster
 pip install -r requirements.txt
 ```
 
-3. Apply migrations:
+3. Set a private signing key in the server environment before running any Django command:
+```bash
+export DJANGO_SECRET_KEY="$(python -c 'import secrets; print(secrets.token_urlsafe(64))')"
+```
+In PowerShell use `$env:DJANGO_SECRET_KEY = python -c "import secrets; print(secrets.token_urlsafe(64))"`.
+Keep this value private. Settings reject a missing or blank key. For Docker Compose,
+copy `.env.example` to `.env` and replace the empty value with your own generated key;
+ordinary Django commands do not automatically load `.env`.
+
+4. Apply migrations:
 ```bash
 python manage.py migrate
 ```
 
-4. Create a superuser:
+5. Create a superuser:
 ```bash
 python manage.py createsuperuser
 ```
 
-5. Run the development server:
+6. Run the development server:
 ```bash
 python manage.py runserver
 ```
